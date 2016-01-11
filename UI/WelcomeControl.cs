@@ -76,7 +76,7 @@ namespace UI
                 this.Visible = false;
                 ((TableLayoutPanel)this.ParentForm.Controls["tableLayoutPanel1"]).Controls.Add(controlInstance, tableLayoutPosition, 0);
                 controlInstance.Dock = DockStyle.Fill;
-                controlInstance.BringToFront();
+                controlInstance.BringToFront();                
             }
             else
             {

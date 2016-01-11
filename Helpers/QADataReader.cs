@@ -43,13 +43,13 @@ namespace Helpers
             try
             {
                 int numberOfLines = File.ReadAllLines(filepath).Length;
-                while (questionNumber <= numberOfLines)
+                while (questionNumber <= numberOfLines && questionNumber > 0)
                 {
                     return File.ReadLines(filepath).Skip(questionNumber - 1).Take(1).First();
                 }
                 return "";
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 throw;
                 //This means the end of the file has been reached.

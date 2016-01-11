@@ -33,7 +33,7 @@ namespace UI
         private void onLoad(object sender, EventArgs e)
         {
             Application.Idle += onIdle;
-            QABot.IncrementQuestionCount();
+            //QABot.IncrementQuestionCount();
             _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount);
         }
 
@@ -59,7 +59,14 @@ namespace UI
         /// <param name="buttonPressed"></param>
         private void LoadNewQuestion(object buttonPressed)
         {
-            QABot.SaveCurrentAnswer(_answerRichTextBox.Text);
+            if (!StatusMgr.isRetakingExercise)
+            {
+                QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.QuestionCount);
+            }
+            else
+            {
+                QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
+            }
             if (((Button)buttonPressed).Text.Equals("NEXT"))
             {
                 QABot.IncrementQuestionCount();
@@ -68,26 +75,46 @@ namespace UI
             {
                 QABot.DecrementQuestionCount();
             }
-
-            if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount)))
+            if (!StatusMgr.isRetakingExercise)
             {
-                ClearControls();
-                _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount);
-                _nextbutton.Enabled = true;
+                if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount)))
+                {
+                    ClearControls();
+                    _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount);
+                    _nextbutton.Enabled = true;
+                }
+                else
+                {
+                    QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
+                    _nextbutton.Enabled = false;
+                    _submitBtn.Enabled = true;
+                }
+                _answerRichTextBox.Text = QABot.GetUserAnswer(QABot.QuestionCount);
             }
             else
             {
-                QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
-                _nextbutton.Enabled = false;
+                if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1))))
+                {
+                    ClearControls();
+                    _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
+                    _nextbutton.Enabled = true;
+                }
+                else
+                {
+                    QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
+                    _nextbutton.Enabled = false;
+                }
+                _answerRichTextBox.Text = QABot.GetUserAnswer(QABot.GetFailedQuestion(QABot.QuestionCount - 1));
             }
-            _answerRichTextBox.Text = QABot.GetUserAnswer(QABot.QuestionCount);
         }
 
         private void onSubmitExercise(object sender, EventArgs e)
         {
             DialogResult dr = MessageBoxHelper.QuestionYesNo(this, "Do you want to Submit now?");
             if (dr == DialogResult.No)
+            {
                 return;
+            }
             QABot.VetExercise();
             DisplayExerciseResult();
         }
@@ -98,6 +125,16 @@ namespace UI
             {
                 adf.ShowDialog();
             }
+            if (StatusMgr.isRetakingExercise)
+            {
+                ClearControls();
+                QABot.ResetQuestionCount();
+                QABot.ResetFailedQuestionCount();
+                _nextbutton.Enabled = true;
+                _questiontextBox.Text = QABot.GetQuestion(1, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
+            }
+
+
         }
     }
 }

@@ -31,7 +31,11 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this._descriptionLabel = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this._retakeBtn = new System.Windows.Forms.Button();
+            this._continueBtn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -54,11 +58,11 @@
             this._descriptionLabel.Name = "_descriptionLabel";
             this._descriptionLabel.Size = new System.Drawing.Size(332, 28);
             this._descriptionLabel.TabIndex = 1;
-            this._descriptionLabel.Text = "label1";
             this._descriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel2
             // 
+            this.tableLayoutPanel2.AutoScroll = true;
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -66,8 +70,44 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(436, 277);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(436, 234);
             this.tableLayoutPanel2.TabIndex = 1;
+            // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this._retakeBtn, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this._continueBtn, 1, 0);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 265);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 1;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(436, 40);
+            this.tableLayoutPanel3.TabIndex = 2;
+            // 
+            // _retakeBtn
+            // 
+            this._retakeBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this._retakeBtn.Location = new System.Drawing.Point(25, 3);
+            this._retakeBtn.Name = "_retakeBtn";
+            this._retakeBtn.Size = new System.Drawing.Size(168, 34);
+            this._retakeBtn.TabIndex = 0;
+            this._retakeBtn.Text = "RETAKE FAILED QUESTIONS";
+            this._retakeBtn.UseVisualStyleBackColor = true;
+            this._retakeBtn.Click += new System.EventHandler(this.onRetake);
+            // 
+            // _continueBtn
+            // 
+            this._continueBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this._continueBtn.Location = new System.Drawing.Point(238, 3);
+            this._continueBtn.Name = "_continueBtn";
+            this._continueBtn.Size = new System.Drawing.Size(178, 34);
+            this._continueBtn.TabIndex = 1;
+            this._continueBtn.Text = "CONTINUE TO NEXT EXERCISE";
+            this._continueBtn.UseVisualStyleBackColor = true;
             // 
             // AnswerDisplayForm
             // 
@@ -75,6 +115,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(436, 305);
+            this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "AnswerDisplayForm";
@@ -83,6 +124,7 @@
             this.Load += new System.EventHandler(this.onLoad);
             this.Shown += new System.EventHandler(this.onFormShown);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -92,5 +134,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label _descriptionLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.Button _retakeBtn;
+        private System.Windows.Forms.Button _continueBtn;
     }
 }
