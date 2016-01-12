@@ -1,6 +1,8 @@
 ﻿
 using Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace UI
@@ -8,6 +10,7 @@ namespace UI
     public partial class QAControl : UserControl
     {
         private QAMgr QABot = QAMgr.Instance;
+        private AppState _currentAppState;
         public QAControl()
         {
             InitializeComponent();
@@ -25,16 +28,23 @@ namespace UI
             }
         }
 
+        public AppState ApplicationState
+        {
+            get { return _currentAppState; }
+            set { _currentAppState = value; }
+        }
+
+
         private void onGoToPreviousQuestion(object sender, EventArgs e)
         {
-            LoadNewQuestion(sender);
+            _currentAppState.PreviousButtonClicked(_answerRichTextBox.Text);//Simulate the button click according to the current state            
         }
 
         private void onLoad(object sender, EventArgs e)
         {
             Application.Idle += onIdle;
-            //QABot.IncrementQuestionCount();
-            _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount);
+            _currentAppState = new NormalState(this);
+            _currentAppState.Initialize();
         }
 
         void onIdle(object sender, EventArgs e)
@@ -44,97 +54,75 @@ namespace UI
 
         private void onGoToNextQuestion(object sender, EventArgs e)
         {
-            LoadNewQuestion(sender);
+            _currentAppState.NextButtonClicked(_answerRichTextBox.Text);
         }
 
-        private void ClearControls()
+        public void ClearControls()
         {
             _answerRichTextBox.Clear();
             _questiontextBox.Clear();
         }
 
-        /// <summary>
-        /// Template method to simulate the previous and next button click
-        /// </summary>
-        /// <param name="buttonPressed"></param>
-        private void LoadNewQuestion(object buttonPressed)
+        public void setAnswerString(string answerString)
         {
-            if (!StatusMgr.isRetakingExercise)
+            _answerRichTextBox.Text = answerString;
+        }
+
+        public void setQuestionString(string questionString)
+        {
+            _questiontextBox.Text = questionString;
+        }
+
+        public void EnableButton(string buttonName)
+        {
+            var buttonControls = GetAllButtonControls(this);
+            foreach (Control c in buttonControls)
             {
-                QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.QuestionCount);
-            }
-            else
-            {
-                QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
-            }
-            if (((Button)buttonPressed).Text.Equals("NEXT"))
-            {
-                QABot.IncrementQuestionCount();
-            }
-            else if (((Button)buttonPressed).Text.Equals("PREV"))
-            {
-                QABot.DecrementQuestionCount();
-            }
-            if (!StatusMgr.isRetakingExercise)
-            {
-                if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount)))
+                if (c.Name == buttonName)
                 {
-                    ClearControls();
-                    _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount);
-                    _nextbutton.Enabled = true;
+                    c.Enabled = true;
                 }
-                else
-                {
-                    QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
-                    _nextbutton.Enabled = false;
-                    _submitBtn.Enabled = true;
-                }
-                _answerRichTextBox.Text = QABot.GetUserAnswer(QABot.QuestionCount);
             }
-            else
+        }
+
+        public void DisableButton(string buttonName)
+        {
+            var buttonControls = GetAllButtonControls(this);
+            foreach (Control c in buttonControls)
             {
-                if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1))))
+                if (c.Name == buttonName)
                 {
-                    ClearControls();
-                    _questiontextBox.Text = QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
-                    _nextbutton.Enabled = true;
+                    c.Enabled = false;
                 }
-                else
-                {
-                    QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
-                    _nextbutton.Enabled = false;
-                }
-                _answerRichTextBox.Text = QABot.GetUserAnswer(QABot.GetFailedQuestion(QABot.QuestionCount - 1));
             }
+        }
+
+        private IEnumerable<Control> GetAllButtonControls(Control c)
+        {
+            var controls = c.Controls.Cast<Control>();
+
+            return controls.SelectMany(ctrl => GetAllButtonControls(ctrl))
+                                      .Concat(controls)
+                                      .Where(ctr => ctr.GetType() == typeof(Button));
         }
 
         private void onSubmitExercise(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBoxHelper.QuestionYesNo(this, "Do you want to Submit now?");
-            if (dr == DialogResult.No)
-            {
-                return;
-            }
+            QABot.ClearAnswerGroupList();
             QABot.VetExercise();
-            DisplayExerciseResult();
-        }
-
-        private void DisplayExerciseResult()
-        {
-            using (AnswerDisplayForm adf = new AnswerDisplayForm())
+            if (QABot.FailedQuestionCount > 0)
             {
-                adf.ShowDialog();
+                //Failed questions have to be retaken, hence::
+                _currentAppState = new RetakeState(this);
             }
-            if (StatusMgr.isRetakingExercise)
+            else
             {
-                ClearControls();
-                QABot.ResetQuestionCount();
-                QABot.ResetFailedQuestionCount();
-                _nextbutton.Enabled = true;
-                _questiontextBox.Text = QABot.GetQuestion(1, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
+
+                //programmer can continue to next exercise
+                _currentAppState = new NormalState(this);
+
             }
-
-
+            _currentAppState.SubmitButtonClicked();
         }
     }
 }

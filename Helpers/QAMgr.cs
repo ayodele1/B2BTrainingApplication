@@ -155,12 +155,17 @@ namespace Helpers
             return false;
         }
 
-        public void VetExercise()
+        public void ClearAnswerGroupList()
         {
-            if (StatusMgr.isRetakingExercise)
+            if (_answersGroupList != null)
             {
                 _answersGroupList.Clear();
             }
+
+        }
+
+        public void VetExercise()
+        {
             _answersGroupList = new List<AnswerGroup>();
             failedQuestions = new List<int>();
             foreach (KeyValuePair<int, string> userAnswer in savedAnswers)
@@ -171,7 +176,6 @@ namespace Helpers
                 {
                     isCorrect = false;
                     _failedQuestionCount++;
-                    StatusMgr.isRetakingExercise = true;
                     failedQuestions.Add(userAnswer.Key);//Store the failed question numbers in a list
                 }
                 //Create an answer group for display in the AnswerDisplayControl.
