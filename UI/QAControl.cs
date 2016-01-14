@@ -108,21 +108,38 @@ namespace UI
 
         private void onSubmitExercise(object sender, EventArgs e)
         {
+            _currentAppState.SubmitButtonClicked(_answerRichTextBox.Text);
             QABot.ClearAnswerGroupList();
             QABot.VetExercise();
+            DialogResult dr = MessageBoxHelper.QuestionYesNo(this, "Do you want to Submit now?");
+            if (dr == DialogResult.No)
+            {
+                return;
+            }
+            DisplayExerciseResult();
+            //QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.QuestionCount);
+            
             if (QABot.FailedQuestionCount > 0)
             {
                 //Failed questions have to be retaken, hence::
                 _currentAppState = new RetakeState(this);
             }
-            else
+            //else
+            //{
+
+            //    //programmer can continue to next exercise
+            //    _currentAppState = new NormalState(this);
+
+            //}
+            _currentAppState.Initialize();
+        }
+
+        private void DisplayExerciseResult()
+        {
+            using (AnswerDisplayForm adf = new AnswerDisplayForm())
             {
-
-                //programmer can continue to next exercise
-                _currentAppState = new NormalState(this);
-
+                adf.ShowDialog();
             }
-            _currentAppState.SubmitButtonClicked();
         }
     }
 }

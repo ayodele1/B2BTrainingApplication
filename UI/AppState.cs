@@ -5,7 +5,7 @@ namespace UI
     {
         void NextButtonClicked(string currentAnswerString);
         void PreviousButtonClicked(string currentAnswerString);
-        void SubmitButtonClicked();
+        void SubmitButtonClicked(string currentAnswerString);
         void Initialize();
     }
 }

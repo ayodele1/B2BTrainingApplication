@@ -22,14 +22,9 @@ namespace UI
 
 
 
-        public void SubmitButtonClicked()
+        public void SubmitButtonClicked(string currentAnswerString)
         {
-            DialogResult dr = MessageBoxHelper.QuestionYesNo(_currentControl, "Do you want to Submit now?");
-            if (dr == DialogResult.No)
-            {
-                return;
-            }
-            DisplayExerciseResult();
+            QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
         }
 
         public void Initialize()
@@ -40,41 +35,36 @@ namespace UI
         public void NextButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
-            QABot.IncrementQuestionCount();
-            LoadNewQuestion();
+            //QABot.IncrementQuestionCount();
+            if (LoadNewQuestion(QABot.QuestionCount + 1)) { QABot.IncrementQuestionCount(); }//This loads data for the next question
         }
 
         public void PreviousButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
-            QABot.DecrementQuestionCount();
-            LoadNewQuestion();
+            //QABot.DecrementQuestionCount();
+            if (LoadNewQuestion(QABot.QuestionCount - 1)) { QABot.DecrementQuestionCount(); }
         }
 
         #region private methods
 
-        private void LoadNewQuestion()
+        private bool LoadNewQuestion(int nextQuestionNumber)
         {
-            if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount)))
+            var nextQuestion = QABot.GetQuestion(QABot.ExerciseCount, nextQuestionNumber);
+            if (!String.IsNullOrEmpty(nextQuestion))
             {
                 _currentControl.ClearControls();
-                _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
+                _currentControl.setQuestionString(nextQuestion);
                 _currentControl.EnableButton("_nextbutton");
+                _currentControl.setAnswerString(QABot.GetUserAnswer(nextQuestionNumber));
+                return true;
             }
             else
             {
-                QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
+                //QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
                 _currentControl.DisableButton("_nextbutton");
                 _currentControl.EnableButton("_submitBtn");
-            }
-            _currentControl.setAnswerString(QABot.GetUserAnswer(QABot.QuestionCount));
-        }
-
-        private void DisplayExerciseResult()
-        {
-            using (AnswerDisplayForm adf = new AnswerDisplayForm())
-            {
-                adf.ShowDialog();
+                return false;
             }
         }
         #endregion

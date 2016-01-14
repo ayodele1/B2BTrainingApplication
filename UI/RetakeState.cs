@@ -8,76 +8,64 @@ namespace UI
     {
         QAMgr QABot = QAMgr.Instance;
         QAControl _currentControl;
-
+        int count = 0;
         public RetakeState(Control userControl)
         {
             _currentControl = (userControl as QAControl);
         }
 
-        public void SubmitButtonClicked()
+        public void SubmitButtonClicked(string currentAnswerString)
         {
-            DialogResult dr = MessageBoxHelper.QuestionYesNo(_currentControl, "Do you want to Submit now?");
-            if (dr == DialogResult.No)
-            {
-                return;
-            }           
-            DisplayExerciseResult();
+            QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetNextFailedQuestion(count));
         }
 
         public void Initialize()
         {
-            _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
+            _currentControl.ClearControls();
+            QABot.ResetQuestionCount();
+            QABot.ResetFailedQuestionCount();
+            _currentControl.EnableButton("_nextbutton");
+            _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.GetNextFailedQuestion(QABot.QuestionCount - 1)));
+            _currentControl.DisableButton("_submitBtn");
+            //_currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
         }
 
         public void NextButtonClicked(string currentAnswerString)
         {
-            QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
-            QABot.IncrementQuestionCount();
-            LoadNewQuestion();
+            QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetNextFailedQuestion(count));
+            //QABot.IncrementQuestionCount();
+            if (LoadNewQuestion(QABot.GetNextFailedQuestion(count + 1))) { QABot.IncrementQuestionCount(); count++; }
 
         }
 
         public void PreviousButtonClicked(string currentAnswerString)
         {
-            QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetFailedQuestion(QABot.QuestionCount - 1));
-            QABot.DecrementQuestionCount();
-            LoadNewQuestion();
+            QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetNextFailedQuestion(count));
+            //QABot.DecrementQuestionCount();
+            if (LoadNewQuestion(QABot.GetNextFailedQuestion(count - 1))) { QABot.DecrementQuestionCount(); count--; }
         }
 
         #region private methods
         /// <summary>
         /// Generic method for simulating both the next and prev button clicks
         /// </summary>
-        private void LoadNewQuestion()
+        private bool LoadNewQuestion(int nextQuestionNumber)
         {
-            if (!String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1))))
+            if (nextQuestionNumber > 0 && !String.IsNullOrEmpty(QABot.GetQuestion(QABot.ExerciseCount, nextQuestionNumber)))
             {
                 _currentControl.ClearControls();
-                _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.GetFailedQuestion(QABot.QuestionCount - 1)));
+                _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, nextQuestionNumber));
                 _currentControl.EnableButton("_nextbutton");
+                _currentControl.setAnswerString(QABot.GetUserAnswer(nextQuestionNumber));
+                return true;
             }
             else
             {
-                QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
+                //QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
                 _currentControl.DisableButton("_nextbutton");
                 _currentControl.EnableButton("_submitBtn");
+                return false;
             }
-            _currentControl.setAnswerString(QABot.GetUserAnswer(QABot.GetFailedQuestion(QABot.QuestionCount - 1)));
-        }
-
-        private void DisplayExerciseResult()
-        {
-            using (AnswerDisplayForm adf = new AnswerDisplayForm())
-            {
-                adf.ShowDialog();
-            }
-            _currentControl.ClearControls();
-            QABot.ResetQuestionCount();
-            QABot.ResetFailedQuestionCount();
-            _currentControl.EnableButton("_nextbutton");
-            _currentControl.setQuestionString(QABot.GetQuestion(1, QABot.GetFailedQuestion(QABot.QuestionCount - 1)));
-            _currentControl.DisableButton("_submitBtn");
-
         }
         #endregion
     }

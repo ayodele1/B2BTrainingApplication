@@ -119,6 +119,7 @@ namespace Helpers
         /// </summary>
         /// <param name="currentAnswer"></param>
         public void SaveCurrentAnswer(string currentAnswer, int questionNumber)
+        
         {
             if (!savedAnswers.ContainsKey(questionNumber))
             {
@@ -191,9 +192,9 @@ namespace Helpers
         /// </summary>
         /// <param name="arrayIndex"></param>
         /// <returns></returns>
-        public int GetFailedQuestion(int arrayIndex)
+        public int GetNextFailedQuestion(int arrayIndex)
         {
-            if (arrayIndex < failedQuestions.ToArray().Length)
+            if (arrayIndex >= 0 && arrayIndex < failedQuestions.ToArray().Length)
             {
                 return failedQuestions.ToArray()[arrayIndex];
             }
