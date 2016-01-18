@@ -10,7 +10,7 @@ namespace UI
     public partial class QAControl : UserControl
     {
         private QAMgr QABot = QAMgr.Instance;
-        private AppState _currentAppState;
+        private IAppState _currentAppState;
         public QAControl()
         {
             InitializeComponent();
@@ -28,7 +28,7 @@ namespace UI
             }
         }
 
-        public AppState ApplicationState
+        public IAppState ApplicationState
         {
             get { return _currentAppState; }
             set { _currentAppState = value; }
@@ -109,8 +109,6 @@ namespace UI
         private void onSubmitExercise(object sender, EventArgs e)
         {
             _currentAppState.SubmitButtonClicked(_answerRichTextBox.Text);
-            QABot.ClearAnswerGroupList();
-            QABot.VetExercise();
             DialogResult dr = MessageBoxHelper.QuestionYesNo(this, "Do you want to Submit now?");
             if (dr == DialogResult.No)
             {
@@ -118,19 +116,6 @@ namespace UI
             }
             DisplayExerciseResult();
             //QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.QuestionCount);
-            
-            if (QABot.FailedQuestionCount > 0)
-            {
-                //Failed questions have to be retaken, hence::
-                _currentAppState = new RetakeState(this);
-            }
-            //else
-            //{
-
-            //    //programmer can continue to next exercise
-            //    _currentAppState = new NormalState(this);
-
-            //}
             _currentAppState.Initialize();
         }
 

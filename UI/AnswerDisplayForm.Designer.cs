@@ -48,16 +48,17 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30.95823F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(436, 28);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(480, 28);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // _descriptionLabel
             // 
             this._descriptionLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this._descriptionLabel.Location = new System.Drawing.Point(52, 0);
+            this._descriptionLabel.Location = new System.Drawing.Point(74, 0);
             this._descriptionLabel.Name = "_descriptionLabel";
             this._descriptionLabel.Size = new System.Drawing.Size(332, 28);
             this._descriptionLabel.TabIndex = 1;
+            this._descriptionLabel.Text = "EXERICSE MARKING";
             this._descriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel2
@@ -70,7 +71,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(436, 234);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(480, 345);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // tableLayoutPanel3
@@ -80,29 +81,29 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this._retakeBtn, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this._continueBtn, 1, 0);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 265);
+            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 373);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(436, 40);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(480, 40);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
             // _retakeBtn
             // 
             this._retakeBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this._retakeBtn.Location = new System.Drawing.Point(25, 3);
+            this._retakeBtn.Location = new System.Drawing.Point(36, 3);
             this._retakeBtn.Name = "_retakeBtn";
             this._retakeBtn.Size = new System.Drawing.Size(168, 34);
             this._retakeBtn.TabIndex = 0;
             this._retakeBtn.Text = "RETAKE FAILED QUESTIONS";
             this._retakeBtn.UseVisualStyleBackColor = true;
-            this._retakeBtn.Click += new System.EventHandler(this.onRetake);
+            this._retakeBtn.Click += new System.EventHandler(this.onRetakeFailedQuestions);
             // 
             // _continueBtn
             // 
             this._continueBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this._continueBtn.Location = new System.Drawing.Point(238, 3);
+            this._continueBtn.Location = new System.Drawing.Point(271, 3);
             this._continueBtn.Name = "_continueBtn";
             this._continueBtn.Size = new System.Drawing.Size(178, 34);
             this._continueBtn.TabIndex = 1;
@@ -114,10 +115,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(436, 305);
+            this.ClientSize = new System.Drawing.Size(480, 414);
+            this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AnswerDisplayForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "AnswerDisplayForm";

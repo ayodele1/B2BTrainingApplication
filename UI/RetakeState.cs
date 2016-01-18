@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace UI
 {
-    public class RetakeState : AppState
+    public class RetakeState : IAppState
     {
         QAMgr QABot = QAMgr.Instance;
         QAControl _currentControl;
@@ -17,6 +17,12 @@ namespace UI
         public void SubmitButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.GetNextFailedQuestion(count));
+            QABot.VetExercise();
+            if (QABot.FailedQuestionCount < 1)
+            {
+                //Failed questions have to be retaken, hence::
+                _currentControl.ApplicationState = new NormalState(_currentControl);
+            }
         }
 
         public void Initialize()

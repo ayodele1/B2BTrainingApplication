@@ -43,19 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnswerDisplayControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AnswerDisplayControl.Designer.cs">
-      <DependentUpon>AnswerDisplayControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="AnswerDisplayForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AnswerDisplayForm.Designer.cs">
       <DependentUpon>AnswerDisplayForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="AppState.cs" />
+    <Compile Include="IAppState.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,9 +75,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AnswerDisplayControl.resx">
-      <DependentUpon>AnswerDisplayControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="AnswerDisplayForm.resx">
       <DependentUpon>AnswerDisplayForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -14,23 +14,12 @@ namespace UI
             InitializeComponent();
         }
 
-        private void onLoad(object sender, EventArgs e)
-        {
-
-        }
-
         private void onFormShown(object sender, EventArgs e)
         {
             TableLayoutPanel tlp = (this.Controls["tableLayoutPanel2"] as TableLayoutPanel);
-            _descriptionLabel.Text = "EXERICSE MARKING";
-            if (QABot.FailedQuestionCount > 0)
-            {
-                _continueBtn.Enabled = false;
-            }
-
             foreach (AnswerGroup ag in QABot.AnswersGroupList)
             {
-                var questionString = string.Format("Question {0}.{1}: {2}", ag.ExerciseNumber, ag.QuestionNumber, ag.Question);
+                var questionString = string.Format("{0}.{1}: {2}", ag.ExerciseNumber, ag.QuestionNumber, ag.Question);
                 var answerString = string.Format("Your Answer: {0}", ag.Answer);
 
                 TextBox tb = AddTextBox(string.Concat(questionString, Environment.NewLine, answerString), ag.IsCorrectAnswer);
@@ -52,7 +41,7 @@ namespace UI
         private TextBox AddTextBox(string text, bool passedQuestion)
         {
             TextBox tb = new TextBox();
-            tb.Height = 40;
+            tb.Height = 45;
             tb.Multiline = true;
             tb.Text = text;
             if (passedQuestion)
@@ -68,9 +57,21 @@ namespace UI
             return tb;
         }
 
-        private void onRetake(object sender, EventArgs e)
+        private void onRetakeFailedQuestions(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void onLoad(object sender, EventArgs e)
+        {
+            if (QABot.FailedQuestionCount > 0)
+            {
+                _continueBtn.Enabled = false;
+            }
+            else
+            {
+                _retakeBtn.Enabled = false;
+            }
         }
     }
 }

@@ -4,27 +4,25 @@ using System.Windows.Forms;
 
 namespace UI
 {
-    public class NormalState : AppState
+    public class NormalState : IAppState
     {
         QAMgr QABot = QAMgr.Instance;
         QAControl _currentControl;
-
-        public NormalState()
-        {
-
-        }
 
         public NormalState(Control userControl)
         {
             _currentControl = (userControl as QAControl);
         }
 
-
-
-
         public void SubmitButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
+            QABot.VetExercise();
+            if (QABot.FailedQuestionCount > 0)
+            {
+                //Failed questions have to be retaken, hence::
+                _currentControl.ApplicationState = new RetakeState(_currentControl);
+            }
         }
 
         public void Initialize()
@@ -35,14 +33,12 @@ namespace UI
         public void NextButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
-            //QABot.IncrementQuestionCount();
             if (LoadNewQuestion(QABot.QuestionCount + 1)) { QABot.IncrementQuestionCount(); }//This loads data for the next question
         }
 
         public void PreviousButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
-            //QABot.DecrementQuestionCount();
             if (LoadNewQuestion(QABot.QuestionCount - 1)) { QABot.DecrementQuestionCount(); }
         }
 
@@ -61,7 +57,6 @@ namespace UI
             }
             else
             {
-                //QABot.DecrementQuestionCount(); //This takes care of the "EOF" null value returned
                 _currentControl.DisableButton("_nextbutton");
                 _currentControl.EnableButton("_submitBtn");
                 return false;

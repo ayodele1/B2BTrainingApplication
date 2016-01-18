@@ -5,11 +5,6 @@ namespace DomainObjects
     {
         private string _email;
 
-        public B2BProgrammer()
-        {
-
-        }
-
         public B2BProgrammer(string Email)
         {
             _email = Email;

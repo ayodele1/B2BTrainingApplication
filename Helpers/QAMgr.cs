@@ -119,7 +119,6 @@ namespace Helpers
         /// </summary>
         /// <param name="currentAnswer"></param>
         public void SaveCurrentAnswer(string currentAnswer, int questionNumber)
-        
         {
             if (!savedAnswers.ContainsKey(questionNumber))
             {
@@ -156,18 +155,19 @@ namespace Helpers
             return false;
         }
 
-        public void ClearAnswerGroupList()
+        public void ClearInitAnswerGroupList()
         {
             if (_answersGroupList != null)
             {
                 _answersGroupList.Clear();
             }
+            _answersGroupList = new List<AnswerGroup>();
 
         }
 
         public void VetExercise()
         {
-            _answersGroupList = new List<AnswerGroup>();
+            ClearInitAnswerGroupList();
             failedQuestions = new List<int>();
             foreach (KeyValuePair<int, string> userAnswer in savedAnswers)
             {

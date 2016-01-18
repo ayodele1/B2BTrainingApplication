@@ -1,7 +1,7 @@
 ﻿
 namespace UI
 {
-    public interface AppState
+    public interface IAppState
     {
         void NextButtonClicked(string currentAnswerString);
         void PreviousButtonClicked(string currentAnswerString);
