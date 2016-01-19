@@ -73,5 +73,10 @@ namespace UI
                 _retakeBtn.Enabled = false;
             }
         }
+
+        private void onLoadNextExercise(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

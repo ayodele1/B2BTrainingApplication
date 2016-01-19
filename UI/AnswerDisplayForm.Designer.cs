@@ -109,6 +109,7 @@
             this._continueBtn.TabIndex = 1;
             this._continueBtn.Text = "CONTINUE TO NEXT EXERCISE";
             this._continueBtn.UseVisualStyleBackColor = true;
+            this._continueBtn.Click += new System.EventHandler(this.onLoadNextExercise);
             // 
             // AnswerDisplayForm
             // 

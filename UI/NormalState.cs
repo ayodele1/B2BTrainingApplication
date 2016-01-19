@@ -23,17 +23,28 @@ namespace UI
                 //Failed questions have to be retaken, hence::
                 _currentControl.ApplicationState = new RetakeState(_currentControl);
             }
+            else
+            {
+                QABot.ExerciseCount++;
+            }
         }
 
         public void Initialize()
         {
+            _currentControl.ClearControls();
+            QABot.ResetQuestionCount();
+            QABot.ResetFailedQuestionCount();
+            _currentControl.EnableButton("_nextbutton");
             _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
+            _currentControl.DisableButton("_submitBtn");
+            _currentControl.setAnswerString(QABot.GetCorrectAnswer(QABot.ExerciseCount, QABot.QuestionCount));//remember to remove.
         }
 
         public void NextButtonClicked(string currentAnswerString)
         {
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
             if (LoadNewQuestion(QABot.QuestionCount + 1)) { QABot.IncrementQuestionCount(); }//This loads data for the next question
+            _currentControl.setAnswerString(QABot.GetCorrectAnswer(QABot.ExerciseCount, QABot.QuestionCount));//for testing purpose!. remember to remove.
         }
 
         public void PreviousButtonClicked(string currentAnswerString)
