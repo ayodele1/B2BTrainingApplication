@@ -91,7 +91,6 @@ namespace UI
 
         public AppStateInfo GetCurrentStateVariables()
         {
-
             return new AppStateInfo(QABot.QuestionCount, QABot.ExerciseCount, QABot.SavedAnswers);
         }
 
