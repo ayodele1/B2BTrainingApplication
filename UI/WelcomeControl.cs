@@ -34,7 +34,7 @@ namespace UI
             if (_firstTimeUser)
             {
                 _startBtn.Text = "START";
-                _emailtextBox.Text = "aawoleye@b2bgateway.net";
+                _emailtextBox.Text = "aawoleye@b2bgateway.net";//Remove
             }
             else
             {
@@ -61,27 +61,7 @@ namespace UI
             }
             B2BProgrammer programmer = new B2BProgrammer(_emailtextBox.Text);
             StatusMgr.CurrentProgrammer = programmer;
-            LoadControlToView(QAControl.Instance, 0);
-        }
-
-        /// <summary>
-        /// Dynamically adds a control to the Mainform
-        /// </summary>
-        /// <param name="controlInstance"></param>
-        /// <param name="layoutPanelName"></param>
-        private void LoadControlToView(Control controlInstance, int tableLayoutPosition)
-        {
-            if (!this.ParentForm.Controls.Contains(controlInstance))
-            {
-                this.Visible = false;
-                ((TableLayoutPanel)this.ParentForm.Controls["tableLayoutPanel1"]).Controls.Add(controlInstance, tableLayoutPosition, 0);
-                controlInstance.Dock = DockStyle.Fill;
-                controlInstance.BringToFront();                
-            }
-            else
-            {
-                QAControl.Instance.BringToFront();
-            }
+            Dispose();
         }
     }
 }

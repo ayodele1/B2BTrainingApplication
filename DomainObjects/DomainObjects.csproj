@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnswerGroup.cs" />
+    <Compile Include="AppStateInfo.cs" />
     <Compile Include="B2BProgrammer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -3,6 +3,9 @@ using DomainObjects;
 using System.Collections.Generic;
 namespace Helpers
 {
+    /*
+     Future: This class needs to be rewritten as an entire static class. No point for the .Instance property.
+     */
     public class QAMgr
     {
         private int _currentQuestionNo = 0;
@@ -23,7 +26,7 @@ namespace Helpers
 
         private static QAMgr _instance = null;
         private static QADataReader _reader = new QADataReader();
-        private Dictionary<int, string> savedAnswers = new Dictionary<int, string>();
+        private Dictionary<int, string> _savedAnswers = new Dictionary<int, string>();
 
         private QAMgr()
         {
@@ -32,16 +35,23 @@ namespace Helpers
 
         public static QAMgr Instance
         {
-            //Load the QAMgr as a singleton
             get
             {
                 if (_instance == null)
+                {
                     _instance = new QAMgr();
+
+                }
 
                 return _instance;
             }
         }
 
+        public Dictionary<int, string> SavedAnswers
+        {
+            get { return _savedAnswers; }
+            set { _savedAnswers = value; }
+        }
         public int CurrentQuestionNo
         {
             get { return _currentQuestionNo; }
@@ -97,9 +107,10 @@ namespace Helpers
         }
 
 
-        public int[] FailedQuestions
+        public List<int> FailedQuestions
         {
-            get { return failedQuestions.ToArray(); }
+            get { return failedQuestions; }
+            set { failedQuestions = value; }
         }
 
 
@@ -120,21 +131,21 @@ namespace Helpers
         /// <param name="currentAnswer"></param>
         public void SaveCurrentAnswer(string currentAnswer, int questionNumber)
         {
-            if (!savedAnswers.ContainsKey(questionNumber))
+            if (!_savedAnswers.ContainsKey(questionNumber))
             {
-                savedAnswers.Add(questionNumber, currentAnswer);
+                _savedAnswers.Add(questionNumber, currentAnswer);
             }
             else
             {
-                savedAnswers[questionNumber] = currentAnswer;
+                _savedAnswers[questionNumber] = currentAnswer;
             }
         }
 
         public string GetUserAnswer(int questionNumber)
         {
-            if (savedAnswers.ContainsKey(questionNumber))
+            if (_savedAnswers.ContainsKey(questionNumber))
             {
-                return savedAnswers[questionNumber];
+                return _savedAnswers[questionNumber];
             }
             return "";
         }
@@ -169,7 +180,7 @@ namespace Helpers
         {
             ClearInitAnswerGroupList();
             failedQuestions = new List<int>();
-            foreach (KeyValuePair<int, string> userAnswer in savedAnswers)
+            foreach (KeyValuePair<int, string> userAnswer in _savedAnswers)
             {
                 bool isCorrect = true;
                 string question = GetQuestion(_exerciseCount, userAnswer.Key);
@@ -184,7 +195,7 @@ namespace Helpers
                 AnswerGroup ag = new AnswerGroup(_exerciseCount, userAnswer.Key, question, userAnswer.Value, isCorrect);
                 _answersGroupList.Add(ag);
             }
-            savedAnswers.Clear();
+            _savedAnswers.Clear();
         }
 
         /// <summary>

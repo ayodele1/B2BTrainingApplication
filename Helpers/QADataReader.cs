@@ -19,7 +19,7 @@ namespace Helpers
         /// </summary>
         /// <param name="exerciseNumber"></param>
         /// <param name="questionNumber"></param>
-        /// <returns></returns>
+        /// <returns></returns>z
         public string ReadQuestionFromFile(int exerciseNumber, int questionNumber)
         {
             GetFilePaths(exerciseNumber);

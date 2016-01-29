@@ -1,4 +1,5 @@
 ﻿
+using DomainObjects;
 namespace UI
 {
     public interface IAppState
@@ -6,6 +7,10 @@ namespace UI
         void NextButtonClicked(string currentAnswerString);
         void PreviousButtonClicked(string currentAnswerString);
         void SubmitButtonClicked(string currentAnswerString);
-        void Initialize();
+        void InitializeNew();
+        void InitializeLoad();
+        //Dynamic Save
+        void SaveAnswer(string currentAnswerString);
+        AppStateInfo GetCurrentStateVariables();
     }
 }

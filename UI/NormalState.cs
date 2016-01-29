@@ -1,4 +1,5 @@
-﻿using Helpers;
+﻿using DomainObjects;
+using Helpers;
 using System;
 using System.Windows.Forms;
 
@@ -29,11 +30,8 @@ namespace UI
             }
         }
 
-        public void Initialize()
+        public void InitializeNew()
         {
-            _currentControl.ClearControls();
-            QABot.ResetQuestionCount();
-            QABot.ResetFailedQuestionCount();
             _currentControl.EnableButton("_nextbutton");
             _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
             _currentControl.DisableButton("_submitBtn");
@@ -42,6 +40,8 @@ namespace UI
 
         public void NextButtonClicked(string currentAnswerString)
         {
+
+
             QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
             if (LoadNewQuestion(QABot.QuestionCount + 1)) { QABot.IncrementQuestionCount(); }//This loads data for the next question
             _currentControl.setAnswerString(QABot.GetCorrectAnswer(QABot.ExerciseCount, QABot.QuestionCount));//for testing purpose!. remember to remove.
@@ -75,5 +75,34 @@ namespace UI
         }
         #endregion
 
+
+        /// <summary>
+        /// This initializes the state from a saved file
+        /// </summary>
+
+        public void InitializeLoad()
+        {
+            _currentControl.EnableButton("_nextbutton");
+            _currentControl.setQuestionString(QABot.GetQuestion(QABot.ExerciseCount, QABot.QuestionCount));
+            _currentControl.DisableButton("_submitBtn");
+            _currentControl.setAnswerString(QABot.GetCorrectAnswer(QABot.ExerciseCount, QABot.QuestionCount));//remember to remove.
+        }
+
+
+        public AppStateInfo GetCurrentStateVariables()
+        {
+
+            return new AppStateInfo(QABot.QuestionCount, QABot.ExerciseCount, QABot.SavedAnswers);
+        }
+
+        public override string ToString()
+        {
+            return "NormalState";
+        }
+
+        public void SaveAnswer(string currentAnswerString)
+        {
+            QABot.SaveCurrentAnswer(currentAnswerString, QABot.QuestionCount);
+        }
     }
 }

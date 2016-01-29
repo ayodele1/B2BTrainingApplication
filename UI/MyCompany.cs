@@ -13,7 +13,7 @@ namespace UI
         /// </summary>
         public const string ProductName = " Training Simulator ";
 
-        public const string ProductAuthor = " AHN ";
+        public const string ProductAuthor = " HAN ";
 
         /// <summary>
         /// 

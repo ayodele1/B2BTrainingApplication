@@ -1,4 +1,5 @@
 ﻿
+using DomainObjects;
 using Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace UI
     {
         private QAMgr QABot = QAMgr.Instance;
         private IAppState _currentAppState;
+        private string _currentAnswer = string.Empty;
         public QAControl()
         {
             InitializeComponent();
@@ -28,10 +30,22 @@ namespace UI
             }
         }
 
+        public bool isInitialized()
+        {
+            if (this != null)
+                return true;
+            return false;
+        }
+
         public IAppState ApplicationState
         {
             get { return _currentAppState; }
             set { _currentAppState = value; }
+        }
+
+        public String CurrentAnswer
+        {
+            get { return _answerRichTextBox.Text; }
         }
 
 
@@ -43,8 +57,16 @@ namespace UI
         private void onLoad(object sender, EventArgs e)
         {
             Application.Idle += onIdle;
-            _currentAppState = new NormalState(this);
-            _currentAppState.Initialize();
+            AppStateInfo _savedStateData = StatusMgr.LoadSavedStateVariables();
+            if (_savedStateData != null)
+            {
+                InitializeLoadedState(_savedStateData);
+            }
+            else
+            {
+                _currentAppState = new NormalState(this);//Application starts in the normal state for new user.
+                _currentAppState.InitializeNew();
+            }
         }
 
         void onIdle(object sender, EventArgs e)
@@ -116,7 +138,10 @@ namespace UI
             }
             DisplayExerciseResult();
             //QABot.SaveCurrentAnswer(_answerRichTextBox.Text, QABot.QuestionCount);
-            _currentAppState.Initialize();
+            this.ClearControls();
+            QABot.ResetQuestionCount();
+            QABot.ResetFailedQuestionCount();
+            _currentAppState.InitializeNew();
         }
 
         private void DisplayExerciseResult()
@@ -126,5 +151,23 @@ namespace UI
                 adf.ShowDialog();
             }
         }
+
+        private void InitializeLoadedState(AppStateInfo loadedState)
+        {
+            if (string.Compare(loadedState.CurrentState, "RetakeState") == 0)
+            {
+                _currentAppState = new RetakeState(this);
+                QABot.FailedQuestions = loadedState.FailedQuestionsList;
+            }
+            else if (string.Compare(loadedState.CurrentState, "NormalState") == 0)
+            {
+                _currentAppState = new NormalState(this);
+            }
+            QABot.ExerciseCount = loadedState.CurrentExerciseNo;
+            QABot.QuestionCount = loadedState.CurrentQuestionNo;
+            QABot.SavedAnswers = loadedState.SavedAnswers;
+            _currentAppState.InitializeNew();
+        }
+
     }
 }
